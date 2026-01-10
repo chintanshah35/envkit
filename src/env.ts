@@ -38,8 +38,8 @@ export function env<T extends EnvSchema>(schema: T): InferEnvType<T> {
       
       result[key] = validated
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      errors.push(createTypeError(key, rawValue, config.type, message))
+      const details = error instanceof Error ? error.message : String(error)
+      errors.push(createTypeError(key, rawValue, config.type, details))
     }
   }
 
