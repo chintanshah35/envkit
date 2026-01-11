@@ -175,7 +175,7 @@ const config = env({
   DEBUG: { type: 'boolean', default: false },
   
   // Optional without defaults
-  SENTRY_DSN: { type: 'url', optional: true },
+  REDIS_URL: { type: 'url', optional: true },
   
   // With transforms
   CORS_ORIGINS: {
@@ -189,7 +189,7 @@ const config = env({
 config.PORT // number
 config.API_KEY // string
 config.DEBUG // boolean
-config.SENTRY_DSN // string | undefined
+config.REDIS_URL // string | undefined
 config.CORS_ORIGINS // string[] (after transform)
 ```
 
