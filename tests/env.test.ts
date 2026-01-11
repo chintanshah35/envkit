@@ -83,5 +83,15 @@ describe('env', () => {
 
     expect(result.VAR).toBe('default')
   })
-})
 
+  it('collects multiple errors', () => {
+    process.env.NUM = 'not-a-number'
+    process.env.EMAIL = 'not-an-email'
+
+    expect(() => env({
+      NUM: { type: 'number' },
+      EMAIL: { type: 'email' },
+      PORT: { type: 'port' }, // missing
+    })).toThrow()
+  })
+})
