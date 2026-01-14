@@ -1,13 +1,13 @@
-# envkit
+# envconfig-kit
 
 > Type-safe environment variables with fail-fast validation. Zero dependencies.
 
-[![npm version](https://img.shields.io/npm/v/envkit.svg)](https://www.npmjs.com/package/envkit)
-[![npm downloads](https://img.shields.io/npm/dm/envkit.svg)](https://www.npmjs.com/package/envkit)
-[![build](https://github.com/chintanshah35/envkit/actions/workflows/test-suite.yml/badge.svg)](https://github.com/chintanshah35/envkit/actions)
-[![node](https://img.shields.io/node/v/envkit.svg)](https://nodejs.org)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/envkit)](https://bundlephobia.com/package/envkit)
-[![license](https://img.shields.io/npm/l/envkit.svg)](https://github.com/chintanshah35/envkit/blob/master/LICENSE)
+[![npm version](https://img.shields.io/npm/v/envconfig-kit.svg)](https://www.npmjs.com/package/envconfig-kit)
+[![npm downloads](https://img.shields.io/npm/dm/envconfig-kit.svg)](https://www.npmjs.com/package/envconfig-kit)
+[![build](https://github.com/chintanshah35/envconfig-kit/actions/workflows/test-suite.yml/badge.svg)](https://github.com/chintanshah35/envconfig-kit/actions)
+[![node](https://img.shields.io/node/v/envconfig-kit.svg)](https://nodejs.org)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/envconfig-kit)](https://bundlephobia.com/package/envconfig-kit)
+[![license](https://img.shields.io/npm/l/envconfig-kit.svg)](https://github.com/chintanshah35/envconfig-kit/blob/master/LICENSE)
 
 ## Why?
 
@@ -23,13 +23,13 @@
 ## Install
 
 ```bash
-npm install envkit
+npm install envconfig-kit
 ```
 
 ## Quick Start
 
 ```typescript
-import { env } from 'envkit'
+import { env } from 'envconfig-kit'
 
 const config = env({
   PORT: { type: 'number', default: 3000 },
@@ -43,11 +43,11 @@ const config = env({
 // Throws on startup if API_KEY or DATABASE_URL is missing
 ```
 
-No need for `dotenv` - envkit automatically loads `.env` files.
+No need for `dotenv` - envconfig-kit automatically loads `.env` files.
 
 ## Built-in .env Loading
 
-envkit automatically loads environment variables from:
+envconfig-kit automatically loads environment variables from:
 - `.env`
 - `.env.local`
 - `.env.development` (based on NODE_ENV)
@@ -106,22 +106,22 @@ When validation fails, you get clear errors with fix suggestions:
 ## CLI Tools
 
 ```bash
-# Initialize envkit in your project
-npx envkit init
+# Initialize envconfig-kit in your project
+npx envconfig-kit init
 
 # Validate .env file
-npx envkit check
+npx envconfig-kit check
 
 # Generate .env.example
-npx envkit generate
+npx envconfig-kit generate
 
 # Health check
-npx envkit doctor
+npx envconfig-kit doctor
 ```
 
 ## Built-in .env Loading
 
-envkit automatically loads environment variables from:
+envconfig-kit automatically loads environment variables from:
 - `.env`
 - `.env.local`
 - `.env.development` (based on NODE_ENV)
@@ -151,7 +151,7 @@ const config = env({
 ## Export Schema
 
 ```typescript
-import { schemaToMarkdown, schemaToJSON, generateDotenvExample } from 'envkit'
+import { schemaToMarkdown, schemaToJSON, generateDotenvExample } from 'envconfig-kit'
 
 const schema = {
   PORT: { type: 'number', default: 3000 },
@@ -171,7 +171,7 @@ console.log(schemaToJSON(schema))
 ## Advanced Usage
 
 ```typescript
-import { env } from 'envkit'
+import { env } from 'envconfig-kit'
 
 const config = env({
   DATABASE_URL: { type: 'url' },

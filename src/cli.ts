@@ -31,34 +31,34 @@ function main() {
 
 function showHelp() {
   console.log(`
-envkit - Type-safe environment variables
+envconfig-kit - Type-safe environment variables
 
 Usage:
-  npx envkit <command> [options]
+  npx envconfig-kit <command> [options]
 
 Commands:
   generate    Generate .env.example from schema file
   check       Validate .env against schema
   doctor      Health check your environment setup
-  init        Initialize envkit in your project
+  init        Initialize envconfig-kit in your project
 
 Options:
   -h, --help  Show this help message
 
 Examples:
-  npx envkit generate
-  npx envkit check
-  npx envkit doctor
+  npx envconfig-kit generate
+  npx envconfig-kit check
+  npx envconfig-kit doctor
   `)
 }
 
 function generateExample(args: string[]) {
-  const schemaPath = args[0] || './envkit.config.js'
+  const schemaPath = args[0] || './envconfig-kit.config.js'
   
   if (!existsSync(schemaPath)) {
     console.error(`❌ Schema file not found: ${schemaPath}`)
     console.log(`\n➜ Create a schema file first:`)
-    console.log(`   echo "module.exports = { schema: { PORT: { type: 'number' } } }" > envkit.config.js`)
+    console.log(`   echo "module.exports = { schema: { PORT: { type: 'number' } } }" > envconfig-kit.config.js`)
     process.exit(1)
   }
 
@@ -85,7 +85,7 @@ function doctor(args: string[]) {
   const checks = [
     { name: '.env file', check: () => existsSync('.env') },
     { name: '.env.example file', check: () => existsSync('.env.example') },
-    { name: 'envkit config', check: () => existsSync('envkit.config.js') || existsSync('envkit.config.ts') },
+    { name: 'envconfig-kit config', check: () => existsSync('envconfig-kit.config.js') || existsSync('envconfig-kit.config.ts') },
   ]
 
   let allPass = true
@@ -107,7 +107,7 @@ function doctor(args: string[]) {
 }
 
 function init(args: string[]) {
-  console.log('🎉 Initializing envkit...\n')
+  console.log('🎉 Initializing envconfig-kit...\n')
   
   const configContent = `module.exports = {
   schema: {
@@ -119,11 +119,11 @@ function init(args: string[]) {
 }
 `
 
-  if (existsSync('envkit.config.js')) {
-    console.log('⚠️  envkit.config.js already exists')
+  if (existsSync('envconfig-kit.config.js')) {
+    console.log('⚠️  envconfig-kit.config.js already exists')
   } else {
-    writeFileSync('envkit.config.js', configContent)
-    console.log('✓ Created envkit.config.js')
+    writeFileSync('envconfig-kit.config.js', configContent)
+    console.log('✓ Created envconfig-kit.config.js')
   }
 
   const envExample = `# Environment Variables
@@ -148,7 +148,7 @@ NODE_ENV=development
   console.log('  1. Copy .env.example to .env')
   console.log('  2. Fill in your environment variables')
   console.log('  3. Import and use in your code:')
-  console.log('     const { env } = require("envkit")')
+  console.log('     const { env } = require("envconfig-kit")')
 }
 
 main()

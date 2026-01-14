@@ -1,5 +1,5 @@
 {
-  "name": "envkit",
+  "name": "envconfig-kit",
   "version": "0.1.0",
   "description": "Type-safe environment variables with fail-fast validation",
   "type": "module",
@@ -7,7 +7,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "envkit": "./dist/cli.cjs"
+    "envconfig-kit": "./dist/cli.cjs"
   },
   "exports": {
     ".": {
@@ -45,12 +45,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chintanshah35/envkit.git"
+    "url": "https://github.com/chintanshah35/envconfig-kit.git"
   },
   "bugs": {
-    "url": "https://github.com/chintanshah35/envkit/issues"
+    "url": "https://github.com/chintanshah35/envconfig-kit/issues"
   },
-  "homepage": "https://github.com/chintanshah35/envkit#readme",
+  "homepage": "https://github.com/chintanshah35/envconfig-kit#readme",
   "devDependencies": {
     "@types/node": "^20.10.0",
     "tsup": "^8.0.1",
