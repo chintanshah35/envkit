@@ -1,17 +1,24 @@
 # envkit
 
-Type-safe environment variables with fail-fast validation. Zero dependencies.
+> Type-safe environment variables with fail-fast validation. Zero dependencies.
 
-## Why envkit?
+[![npm version](https://img.shields.io/npm/v/envkit.svg)](https://www.npmjs.com/package/envkit)
+[![npm downloads](https://img.shields.io/npm/dm/envkit.svg)](https://www.npmjs.com/package/envkit)
+[![build](https://github.com/chintanshah35/envkit/actions/workflows/test-suite.yml/badge.svg)](https://github.com/chintanshah35/envkit/actions)
+[![node](https://img.shields.io/node/v/envkit.svg)](https://nodejs.org)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/envkit)](https://bundlephobia.com/package/envkit)
+[![license](https://img.shields.io/npm/l/envkit.svg)](https://github.com/chintanshah35/envkit/blob/master/LICENSE)
 
-- ✅ **Built-in .env loading** - No need for dotenv
-- ✅ **Type-safe** - Full TypeScript inference
-- ✅ **Zero dependencies** - 3KB minified
-- ✅ **Fail-fast validation** - Catches errors at startup
-- ✅ **Actionable error messages** - Know exactly how to fix issues
-- ✅ **CLI tools** - Generate .env.example, validate, health checks
-- ✅ **Transform support** - Parse and sanitize values
-- ✅ **Multi-environment** - Load .env.development, .env.production, etc.
+## Why?
+
+- **Built-in .env loading** - no need for dotenv
+- **Type-safe** - full TypeScript inference
+- **Zero dependencies** - 3KB minified
+- **Fail-fast validation** - catches errors at startup
+- **Actionable error messages** - tells you exactly how to fix issues
+- **CLI tools** - generate .env.example, validate, health checks
+- **Transform support** - parse and sanitize values
+- **Multi-environment** - .env.development, .env.production, etc.
 
 ## Install
 
@@ -38,9 +45,7 @@ const config = env({
 
 No need for `dotenv` - envkit automatically loads `.env` files.
 
-## Features
-
-### Built-in .env Loading
+## Built-in .env Loading
 
 envkit automatically loads environment variables from:
 - `.env`
@@ -55,7 +60,7 @@ const config = env({
 // Automatically loads from .env files
 ```
 
-### Supported Types
+## Supported Types
 
 | Type | Validates | Example |
 |------|-----------|---------|
@@ -66,20 +71,13 @@ const config = env({
 | `email` | Valid email format | `"user@example.com"` |
 | `port` | Number between 0-65535 | `"3000"` → `3000` |
 
-### Schema Options
+## Schema Options
 
 ```typescript
 env({
-  // Required by default
   API_KEY: { type: 'string' },
-  
-  // With default value
   PORT: { type: 'number', default: 3000 },
-  
-  // Optional (can be undefined)
   OPTIONAL_VAR: { type: 'string', optional: true },
-  
-  // Transform values
   TAGS: { 
     type: 'string',
     transform: (value) => value.split(',') 
@@ -87,7 +85,7 @@ env({
 })
 ```
 
-### Actionable Error Messages
+## Error Messages
 
 When validation fails, you get clear errors with fix suggestions:
 
@@ -105,7 +103,7 @@ When validation fails, you get clear errors with fix suggestions:
   Run your app with valid environment variables or add them to .env
 ```
 
-### CLI Tools
+## CLI Tools
 
 ```bash
 # Initialize envkit in your project
@@ -121,17 +119,28 @@ npx envkit generate
 npx envkit doctor
 ```
 
-### Transform Values
+## Built-in .env Loading
+
+envkit automatically loads environment variables from:
+- `.env`
+- `.env.local`
+- `.env.development` (based on NODE_ENV)
+- `.env.production` (based on NODE_ENV)
+
+Priority order:
+1. `process.env` (highest)
+2. `.env.local`
+3. `.env.${NODE_ENV}`
+4. `.env` (lowest)
+
+## Transform Values
 
 ```typescript
 const config = env({
-  // Parse CSV into array
   ALLOWED_ORIGINS: {
     type: 'string',
     transform: (value) => value.split(',')
   },
-  
-  // Remove trailing slashes
   API_URL: {
     type: 'url',
     transform: (value) => value.replace(/\/$/, '')
@@ -139,7 +148,7 @@ const config = env({
 })
 ```
 
-### Export Schema
+## Export Schema
 
 ```typescript
 import { schemaToMarkdown, schemaToJSON, generateDotenvExample } from 'envkit'
@@ -165,19 +174,12 @@ console.log(schemaToJSON(schema))
 import { env } from 'envkit'
 
 const config = env({
-  // Required variables
   DATABASE_URL: { type: 'url' },
   API_KEY: { type: 'string' },
-  
-  // Optional with defaults
   PORT: { type: 'number', default: 3000 },
   HOST: { type: 'string', default: 'localhost' },
   DEBUG: { type: 'boolean', default: false },
-  
-  // Optional without defaults
   REDIS_URL: { type: 'url', optional: true },
-  
-  // With transforms
   CORS_ORIGINS: {
     type: 'string',
     default: 'http://localhost:3000',
@@ -197,6 +199,4 @@ config.CORS_ORIGINS // string[] (after transform)
 
 MIT
 
-## Author
 
-Chintan Shah
