@@ -85,5 +85,78 @@ describe('validators', () => {
       expect(() => validators.port('abc')).toThrow()
     })
   })
+
+  describe('integer', () => {
+    it('parses valid integers', () => {
+      expect(validators.integer('42')).toBe(42)
+      expect(validators.integer('-10')).toBe(-10)
+      expect(validators.integer('0')).toBe(0)
+    })
+
+    it('throws on non-integers', () => {
+      expect(() => validators.integer('3.14')).toThrow('Invalid integer')
+      expect(() => validators.integer('abc')).toThrow('Invalid integer')
+      expect(() => validators.integer('')).toThrow('Cannot parse empty string')
+    })
+  })
+
+  describe('json', () => {
+    it('parses valid JSON', () => {
+      expect(validators.json('{"key":"value"}')).toEqual({ key: 'value' })
+      expect(validators.json('[1,2,3]')).toEqual([1, 2, 3])
+      expect(validators.json('"string"')).toBe('string')
+      expect(validators.json('123')).toBe(123)
+      expect(validators.json('true')).toBe(true)
+    })
+
+    it('throws on invalid JSON', () => {
+      expect(() => validators.json('not json')).toThrow('Invalid JSON')
+      expect(() => validators.json('{invalid}')).toThrow('Invalid JSON')
+    })
+  })
+
+  describe('array', () => {
+    it('splits comma-separated values', () => {
+      expect(validators.array('a,b,c')).toEqual(['a', 'b', 'c'])
+      expect(validators.array('one, two, three')).toEqual(['one', 'two', 'three'])
+    })
+
+    it('handles empty values', () => {
+      expect(validators.array('a,,b')).toEqual(['a', 'b'])
+      expect(validators.array('')).toEqual([])
+    })
+
+    it('uses custom separator', () => {
+      expect(validators.array('a|b|c', { type: 'array', separator: '|' })).toEqual(['a', 'b', 'c'])
+    })
+  })
+
+  describe('enum', () => {
+    const config = { type: 'enum' as const, values: ['dev', 'staging', 'prod'] as const }
+
+    it('accepts valid enum values', () => {
+      expect(validators.enum('dev', config)).toBe('dev')
+      expect(validators.enum('prod', config)).toBe('prod')
+    })
+
+    it('throws on invalid enum values', () => {
+      expect(() => validators.enum('invalid', config)).toThrow('Invalid enum value')
+      expect(() => validators.enum('DEV', config)).toThrow('Invalid enum value')
+    })
+  })
+
+  describe('regex', () => {
+    const config = { type: 'regex' as const, pattern: /^[A-Z]{3}-\d{4}$/ }
+
+    it('accepts matching values', () => {
+      expect(validators.regex('ABC-1234', config)).toBe('ABC-1234')
+      expect(validators.regex('XYZ-9999', config)).toBe('XYZ-9999')
+    })
+
+    it('throws on non-matching values', () => {
+      expect(() => validators.regex('abc-1234', config)).toThrow('does not match pattern')
+      expect(() => validators.regex('ABCD-123', config)).toThrow('does not match pattern')
+    })
+  })
 })
 
