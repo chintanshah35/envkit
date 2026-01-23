@@ -94,4 +94,99 @@ describe('env', () => {
       PORT: { type: 'port' }, // missing
     })).toThrow()
   })
+
+  it('validates with custom validate function', () => {
+    process.env.PORT = '80'
+
+    expect(() => env({
+      PORT: { 
+        type: 'number',
+        validate: (value) => (value as number) >= 1024
+      },
+    })).toThrow('Custom validation failed')
+  })
+
+  it('passes custom validate function', () => {
+    process.env.PORT = '3000'
+
+    const result = env({
+      PORT: { 
+        type: 'number',
+        validate: (value) => (value as number) >= 1024
+      },
+    })
+
+    expect(result.PORT).toBe(3000)
+  })
+
+  it('masks secret values in errors', () => {
+    process.env.API_KEY = 'invalid-json'
+
+    try {
+      env({
+        API_KEY: { type: 'json', secret: true },
+      })
+    } catch (error) {
+      expect((error as Error).message).toContain('****')
+      expect((error as Error).message).not.toContain('invalid-json')
+    }
+  })
+
+  it('supports enum type', () => {
+    process.env.ENV = 'production'
+
+    const result = env({
+      ENV: { type: 'enum', values: ['development', 'staging', 'production'] as const },
+    })
+
+    expect(result.ENV).toBe('production')
+  })
+
+  it('throws on invalid enum value', () => {
+    process.env.ENV = 'invalid'
+
+    expect(() => env({
+      ENV: { type: 'enum', values: ['development', 'staging', 'production'] as const },
+    })).toThrow('Invalid enum value')
+  })
+
+  it('supports array type', () => {
+    process.env.TAGS = 'one,two,three'
+
+    const result = env({
+      TAGS: { type: 'array' },
+    })
+
+    expect(result.TAGS).toEqual(['one', 'two', 'three'])
+  })
+
+  it('supports json type', () => {
+    process.env.CONFIG = '{"debug":true}'
+
+    const result = env({
+      CONFIG: { type: 'json' },
+    })
+
+    expect(result.CONFIG).toEqual({ debug: true })
+  })
+
+  it('supports regex type', () => {
+    process.env.CODE = 'ABC-1234'
+
+    const result = env({
+      CODE: { type: 'regex', pattern: /^[A-Z]{3}-\d{4}$/ },
+    })
+
+    expect(result.CODE).toBe('ABC-1234')
+  })
+
+  it('supports integer type', () => {
+    process.env.COUNT = '42'
+
+    const result = env({
+      COUNT: { type: 'integer' },
+    })
+
+    expect(result.COUNT).toBe(42)
+  })
 })
