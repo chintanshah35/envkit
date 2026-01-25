@@ -1,6 +1,6 @@
 {
   "name": "envconfig-kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Type-safe environment variables with fail-fast validation",
   "type": "module",
   "main": "./dist/index.cjs",
