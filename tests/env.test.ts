@@ -26,6 +26,9 @@ describe('env', () => {
   })
 
   it('uses default values', () => {
+    delete process.env.PORT
+    delete process.env.DEBUG
+
     const result = env({
       PORT: { type: 'number', default: 8080 },
       DEBUG: { type: 'boolean', default: false },
@@ -188,5 +191,99 @@ describe('env', () => {
     })
 
     expect(result.COUNT).toBe(42)
+  })
+
+  it('masks secrets in type errors', () => {
+    process.env.SECRET = 'not-a-number'
+
+    try {
+      env({
+        SECRET: { type: 'number', secret: true },
+      })
+    } catch (error) {
+      expect((error as Error).message).toContain('****')
+      expect((error as Error).message).not.toContain('not-a-number')
+    }
+  })
+
+  it('masks secrets in missing errors', () => {
+    try {
+      env({
+        SECRET: { type: 'string', secret: true },
+      })
+    } catch (error) {
+      const message = (error as Error).message
+      expect(message).toContain('SECRET')
+      expect(message).toContain('Missing required environment variable')
+    }
+  })
+
+  it('respects maskSecrets option = false', () => {
+    process.env.SECRET = 'invalid-json'
+
+    try {
+      env({
+        SECRET: { type: 'json', secret: true },
+      }, { maskSecrets: false })
+    } catch (error) {
+      expect((error as Error).message).toContain('invalid-json')
+      expect((error as Error).message).not.toContain('****')
+    }
+  })
+
+  it('applies transform after validation', () => {
+    process.env.PORT = '3000'
+
+    const result = env({
+      PORT: {
+        type: 'number',
+        transform: (value) => (value as number) * 2,
+      },
+    })
+
+    expect(result.PORT).toBe(6000)
+  })
+
+  it('validates after transform', () => {
+    process.env.PORT = '3000'
+
+    const result = env({
+      PORT: {
+        type: 'number',
+        transform: (value) => (value as number) * 2,
+        validate: (value) => (value as number) >= 5000,
+      },
+    })
+
+    expect(result.PORT).toBe(6000)
+  })
+
+  it('throws validation error after transform', () => {
+    process.env.PORT = '3000'
+
+    expect(() => env({
+      PORT: {
+        type: 'number',
+        transform: (value) => (value as number) * 2,
+        validate: (value) => (value as number) < 5000,
+      },
+    })).toThrow('Custom validation failed')
+  })
+
+  it('masks secrets in transform validation errors', () => {
+    process.env.SECRET = '3000'
+
+    try {
+      env({
+        SECRET: {
+          type: 'number',
+          transform: (value) => (value as number) * 2,
+          validate: (value) => (value as number) < 5000,
+          secret: true,
+        },
+      })
+    } catch (error) {
+      expect((error as Error).message).toContain('****')
+    }
   })
 })
