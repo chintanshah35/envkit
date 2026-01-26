@@ -141,6 +141,7 @@ const config = env({
   ...presets.auth(),        // AUTH_JWT_SECRET, etc.
   ...presets.aws(),         // AWS_ACCESS_KEY_ID, etc.
   ...presets.smtp(),        // SMTP_HOST, SMTP_PORT, etc.
+  ...presets.cors(),        // CORS_ORIGINS, CORS_METHODS, etc.
 })
 ```
 
