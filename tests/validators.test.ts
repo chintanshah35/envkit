@@ -52,6 +52,21 @@ describe('validators', () => {
       expect(validators.url('postgres://user:pass@host:5432/db')).toBe('postgres://user:pass@host:5432/db')
     })
 
+    it('accepts localhost URLs', () => {
+      expect(validators.url('http://localhost')).toBe('http://localhost')
+      expect(validators.url('http://127.0.0.1:3000')).toBe('http://127.0.0.1:3000')
+    })
+
+    it('accepts IP addresses', () => {
+      expect(validators.url('http://192.168.1.1')).toBe('http://192.168.1.1')
+      expect(validators.url('https://8.8.8.8')).toBe('https://8.8.8.8')
+    })
+
+    it('accepts URLs with ports', () => {
+      expect(validators.url('http://example.com:8080')).toBe('http://example.com:8080')
+      expect(validators.url('https://api.example.com:443')).toBe('https://api.example.com:443')
+    })
+
     it('throws on invalid URLs', () => {
       expect(() => validators.url('not-a-url')).toThrow('Invalid URL')
       expect(() => validators.url('example.com')).toThrow('Invalid URL')
@@ -93,6 +108,11 @@ describe('validators', () => {
       expect(validators.integer('0')).toBe(0)
     })
 
+    it('handles large integers', () => {
+      expect(validators.integer('2147483647')).toBe(2147483647)
+      expect(validators.integer('-2147483648')).toBe(-2147483648)
+    })
+
     it('throws on non-integers', () => {
       expect(() => validators.integer('3.14')).toThrow('Invalid integer')
       expect(() => validators.integer('abc')).toThrow('Invalid integer')
@@ -107,6 +127,18 @@ describe('validators', () => {
       expect(validators.json('"string"')).toBe('string')
       expect(validators.json('123')).toBe(123)
       expect(validators.json('true')).toBe(true)
+    })
+
+    it('parses null', () => {
+      expect(validators.json('null')).toBe(null)
+    })
+
+    it('parses nested objects', () => {
+      expect(validators.json('{"a":{"b":{"c":1}}}')).toEqual({ a: { b: { c: 1 } } })
+    })
+
+    it('parses arrays with objects', () => {
+      expect(validators.json('[{"id":1},{"id":2}]')).toEqual([{ id: 1 }, { id: 2 }])
     })
 
     it('throws on invalid JSON', () => {
@@ -128,6 +160,14 @@ describe('validators', () => {
 
     it('uses custom separator', () => {
       expect(validators.array('a|b|c', { type: 'array', separator: '|' })).toEqual(['a', 'b', 'c'])
+    })
+
+    it('handles single value', () => {
+      expect(validators.array('single')).toEqual(['single'])
+    })
+
+    it('trims whitespace around values', () => {
+      expect(validators.array('  a  ,  b  ,  c  ')).toEqual(['a', 'b', 'c'])
     })
   })
 
@@ -157,6 +197,15 @@ describe('validators', () => {
       expect(() => validators.regex('abc-1234', config)).toThrow('does not match pattern')
       expect(() => validators.regex('ABCD-123', config)).toThrow('does not match pattern')
     })
+
+    it('handles empty string', () => {
+      expect(() => validators.regex('', config)).toThrow('does not match pattern')
+    })
+
+    it('handles special characters in pattern', () => {
+      const specialConfig = { type: 'regex' as const, pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/ }
+      expect(validators.regex('user@example.com', specialConfig)).toBe('user@example.com')
+      expect(() => validators.regex('invalid', specialConfig)).toThrow('does not match pattern')
+    })
   })
-})
 
