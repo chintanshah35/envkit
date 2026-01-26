@@ -208,4 +208,4 @@ describe('validators', () => {
       expect(() => validators.regex('invalid', specialConfig)).toThrow('does not match pattern')
     })
   })
-
+})

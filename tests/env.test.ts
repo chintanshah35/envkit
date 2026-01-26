@@ -28,6 +28,7 @@ describe('env', () => {
   it('uses default values', () => {
     delete process.env.PORT
     delete process.env.DEBUG
+    process.env.PORT = undefined as any
 
     const result = env({
       PORT: { type: 'number', default: 8080 },
